@@ -2,7 +2,7 @@
 
 use std::fmt::Display;
 
-use crate::pretty::Block;
+use crate::pretty::block::Block;
 
 pub struct Fail<'a> {
     pub name: &'a str,
