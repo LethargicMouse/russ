@@ -15,7 +15,7 @@ impl Display for Fail<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "! error running command `{}`:\n--! failed with exit code {}\n{}{}",
+            "! error running command `{}`:\n--! failed with exit code {}\n{}\n{}",
             self.name,
             self.code,
             Block("stdout", std::str::from_utf8(&self.stdout).unwrap()),

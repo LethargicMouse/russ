@@ -23,5 +23,5 @@ fn compile(source: &Source) {
     let ir = build(source);
     ir.dump();
     command::run("qbe", &["-o", "out.s", "out.qbe"]);
-    command::run("qbe", &["-o", "out", "out.s"]);
+    command::run("cc", &["-o", "out", "out.s"]);
 }
