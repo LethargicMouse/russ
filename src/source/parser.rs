@@ -1,6 +1,7 @@
+pub mod common;
 mod error;
 
-use std::collections::HashSet;
+use std::{cmp::Ordering, collections::HashSet};
 
 use crate::{
     death::OrDie,
@@ -9,7 +10,8 @@ use crate::{
 
 pub struct Parser<'a> {
     source: &'a Source,
-    err_pos: Pos,
+    cursor: usize,
+    err_cursor: usize,
     err_msgs: HashSet<&'static str>,
 }
 
@@ -17,7 +19,8 @@ impl<'a> Parser<'a> {
     pub fn new(source: &'a Source) -> Self {
         Self {
             source,
-            err_pos: Pos::START,
+            cursor: 0,
+            err_cursor: 0,
             err_msgs: HashSet::new(),
         }
     }
@@ -27,15 +30,13 @@ impl<'a> Parser<'a> {
     }
 
     fn error(self) -> Error<'a> {
-        let view = self.view_at(self.err_pos);
+        let view = self.view_at(self.source.poses[self.err_cursor]);
         let msgs = self.err_msgs;
         Error { view, msgs }
     }
 
     fn view_at(&self, pos: Pos) -> View<'a> {
-        let mut pos2 = pos;
-        pos2.symbol += 1;
-        self.view(pos, pos2)
+        self.view(pos, pos.next(' '))
     }
 
     fn view(&self, start: Pos, end: Pos) -> View<'a> {
@@ -49,5 +50,36 @@ impl<'a> Parser<'a> {
 
     pub fn source_name(&self) -> &'a str {
         &self.source.name
+    }
+
+    pub fn eof(&mut self) -> Result<(), ()> {
+        self.skip_spaces();
+        if self.cursor == self.source.code.len() {
+            Ok(())
+        } else {
+            self.fail("end of file")
+        }
+    }
+
+    fn fail<T>(&mut self, msg: &'static str) -> Result<T, ()> {
+        match self.cursor.cmp(&self.err_cursor) {
+            Ordering::Less => {}
+            Ordering::Equal => {
+                self.err_msgs.insert(msg);
+            }
+            Ordering::Greater => {
+                self.err_cursor = self.cursor;
+                self.err_msgs.clear();
+                self.err_msgs.insert(msg);
+            }
+        }
+        Err(())
+    }
+
+    fn skip_spaces(&mut self) {
+        self.cursor += self.source.code[self.cursor..]
+            .chars()
+            .take_while(|c| c.is_whitespace())
+            .count();
     }
 }

@@ -1,12 +1,18 @@
 pub mod parser;
 pub mod pos;
+mod posify;
 pub mod view;
 
-use crate::file;
+use crate::{
+    file,
+    source::{pos::Pos, posify::posify},
+};
 
 pub struct Source {
     name: String,
+    code: String,
     lines: Vec<String>,
+    poses: Vec<Pos>,
 }
 
 impl Source {
@@ -16,7 +22,11 @@ impl Source {
     }
 
     pub fn new(name: String, code: String) -> Self {
-        let lines = code.lines().map(|l| l.to_owned()).collect();
-        Self { name, lines }
+        Self {
+            lines: code.lines().map(String::from).collect(),
+            poses: posify(&code),
+            code,
+            name,
+        }
     }
 }

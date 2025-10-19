@@ -1,3 +1,5 @@
+pub mod expr;
+pub mod fun;
 pub mod parse;
 pub mod structure;
 

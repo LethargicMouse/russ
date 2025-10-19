@@ -13,5 +13,15 @@ impl Display for Pos {
 }
 
 impl Pos {
-    pub const START: Pos = Pos { line: 1, symbol: 1 };
+    pub const START: Self = Self { line: 1, symbol: 1 };
+
+    pub fn next(mut self, c: char) -> Self {
+        if c == '\n' {
+            self.line += 1;
+            self.symbol = 0;
+        } else {
+            self.symbol += 1;
+        }
+        self
+    }
 }
