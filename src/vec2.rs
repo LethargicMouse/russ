@@ -47,3 +47,5 @@ impl<A: Clone, T: DivAssign<A>> DivAssign<A> for Vec2<T> {
         self.y /= rhs;
     }
 }
+
+pub type Point = Vec2<f32>;

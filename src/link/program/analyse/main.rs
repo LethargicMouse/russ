@@ -6,8 +6,9 @@ use crate::{
 };
 
 pub fn check_main(program: Program) {
-    let _ = program;
-    die(NoMain {
-        src_name: program.name,
-    })
+    if !program.funs.contains_key("name") {
+        die(NoMain {
+            src_name: program.name,
+        })
+    }
 }

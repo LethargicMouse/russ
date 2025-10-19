@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 mod command;
+mod data;
 mod death;
 mod either;
 mod file;
@@ -11,5 +12,5 @@ mod source;
 mod vec2;
 
 fn main() {
-    link::compiler::run()
+    k_means::test()
 }
