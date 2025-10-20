@@ -12,7 +12,7 @@ pub fn parse_ast(source: &'_ Source) -> Ast<'_> {
 
 pub fn ast<'a>(p: &mut Parser<'a>) -> Result<Ast<'a>, PF> {
     let name = &p.source.name;
-    let _ = fun(p)?;
+    let funs = p.many(fun);
     eof(p)?;
-    Ok(Ast { name })
+    Ok(Ast { name, funs })
 }

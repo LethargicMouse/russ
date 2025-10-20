@@ -1,5 +1,5 @@
 pub mod parser;
-pub mod pos;
+mod pos;
 mod posify;
 pub mod view;
 

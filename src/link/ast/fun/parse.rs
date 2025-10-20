@@ -6,8 +6,8 @@ use crate::{
     source::parser::{Parser, fail::PF},
 };
 
-pub fn fun<'a>(p: &mut Parser<'a>) -> Result<Fun, PF> {
-    let _ = header(p)?;
+pub fn fun<'a>(p: &mut Parser<'a>) -> Result<Fun<'a>, PF> {
+    let header = header(p)?;
     let _ = block(p)?;
-    Ok(Fun {})
+    Ok(Fun { header })
 }

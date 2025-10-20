@@ -6,6 +6,9 @@ use crate::{
 
 mod args;
 mod build;
+mod generate;
+mod ir_builder;
+pub use generate::generate;
 
 pub fn run() {
     let args = Args::get();

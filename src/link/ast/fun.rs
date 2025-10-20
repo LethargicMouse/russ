@@ -1,4 +1,11 @@
-pub mod header;
-pub mod parse;
+use crate::link::ast::fun::header::Header;
 
-pub struct Fun {}
+mod header;
+mod name;
+pub mod parse;
+mod view;
+
+#[derive(Debug)]
+pub struct Fun<'a> {
+    header: Header<'a>,
+}

@@ -1,6 +1,7 @@
 pub mod get;
 mod line;
 mod underline;
+pub mod viewed;
 
 use std::fmt::Display;
 
@@ -9,6 +10,7 @@ use crate::source::{
     view::{line::Line, underline::Underline},
 };
 
+#[derive(Clone, Copy)]
 pub struct View<'a> {
     pub src_name: &'a str,
     pub lines: &'a [String],

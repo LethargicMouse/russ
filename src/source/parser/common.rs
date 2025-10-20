@@ -1,6 +1,9 @@
-pub mod name;
+mod name;
 pub use name::name;
-pub mod eof;
+mod eof;
 pub use eof::eof;
-pub mod expect;
-pub mod skip_spaces;
+mod expect;
+mod many;
+mod maybe;
+mod skip_spaces;
+mod viewed;

@@ -2,11 +2,12 @@ use std::collections::HashMap;
 
 use crate::link::ast::fun::Fun;
 
+mod add;
 pub mod analyse;
 
 pub struct Program<'a> {
     name: &'a str,
-    funs: HashMap<&'a str, Fun>,
+    funs: HashMap<&'a str, Fun<'a>>,
 }
 
 impl<'a> Program<'a> {
