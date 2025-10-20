@@ -6,7 +6,7 @@ use crate::{
     },
 };
 
-mod data;
+pub mod data;
 
 pub fn test() {
     let blob_count = 3;

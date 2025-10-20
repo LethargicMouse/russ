@@ -1,4 +1,3 @@
-// provides an entry point to the Link compiler
 use crate::{
     command,
     link::compiler::{args::Args, build::build},

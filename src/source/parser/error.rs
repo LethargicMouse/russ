@@ -1,6 +1,6 @@
 use std::{collections::HashSet, fmt::Display};
 
-use crate::source::view::View;
+use crate::source::{parser::Parser, view::View};
 
 pub struct Error<'a> {
     pub view: View<'a>,
@@ -14,5 +14,13 @@ impl Display for Error<'_> {
             write!(f, "\n    - {msg}")?;
         }
         Ok(())
+    }
+}
+
+impl<'a> Parser<'a> {
+    pub fn error(self) -> Error<'a> {
+        let view = self.source.view_at(self.source.poses[self.err_cursor]);
+        let msgs = self.err_msgs;
+        Error { view, msgs }
     }
 }

@@ -9,7 +9,7 @@ use crate::{
 };
 
 pub struct Source {
-    name: String,
+    pub name: String,
     code: String,
     lines: Vec<String>,
     poses: Vec<Pos>,
