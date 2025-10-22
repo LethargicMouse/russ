@@ -6,6 +6,6 @@ mod file;
 pub mod k_means;
 pub mod link;
 mod pretty;
-mod qbe;
+pub mod qbe;
 mod source;
 mod vec2;

@@ -1,10 +1,14 @@
-// provides type of QBE intermediate representation
+mod empty;
+mod fun;
+pub mod r#type;
 
 use std::{fmt::Display, fs::File, io::Write};
 
-use crate::death::OrDie;
+use crate::{death::OrDie, qbe::ir::fun::Fun};
 
-pub struct IR {}
+pub struct IR {
+    funs: Vec<Fun>,
+}
 
 impl IR {
     pub fn dump(self) {
@@ -15,7 +19,10 @@ impl IR {
 
 impl Display for IR {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let _ = f;
+        write!(f, "export")?;
+        for fun in &self.funs {
+            write!(f, "{fun}")?;
+        }
         Ok(())
     }
 }

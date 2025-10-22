@@ -1,16 +1,16 @@
 pub mod test;
-#[allow(unused_imports)]
+use rand::{rng, seq::SliceRandom};
 pub use test::test;
 
 use std::{
-    iter::{repeat_n, repeat_with},
+    iter::{repeat_n, successors},
     mem::swap,
 };
 
-use crate::{data::generate::point::random_point, vec2::Point};
+use crate::vec2::Point;
 
-pub fn k_means(blob_count: usize, points: &Vec<Point>, radius: f32) -> Vec<usize> {
-    KMeans::init(blob_count, points, radius).run()
+pub fn k_means(blob_count: usize, points: &Vec<Point>) -> Vec<usize> {
+    KMeans::init(blob_count, points).run()
 }
 
 struct KMeans<'a> {
@@ -23,10 +23,8 @@ struct KMeans<'a> {
 }
 
 impl<'a> KMeans<'a> {
-    fn init(blob_count: usize, points: &'a Vec<Point>, radius: f32) -> Self {
-        let centers: Vec<Point> = repeat_with(|| random_point(radius))
-            .take(blob_count)
-            .collect();
+    fn init(blob_count: usize, points: &'a Vec<Point>) -> Self {
+        let centers = choose(blob_count, points);
         let new_centers = centers.clone();
         let colors = repeat_n(0, points.len()).collect();
         let cluster_sizes = repeat_n(0, blob_count).collect();
@@ -89,10 +87,18 @@ impl<'a> KMeans<'a> {
     fn nearest_to_point(&self, i: usize) -> usize {
         let mut res = 0;
         for j in 1..self.centers.len() {
-            if self.points[i].dist2(self.centers[res]) < self.points[i].dist2(self.centers[j]) {
+            if self.points[i].dist2(self.centers[res]) > self.points[i].dist2(self.centers[j]) {
                 res = j;
             }
         }
         res
     }
+}
+
+fn choose(blob_count: usize, points: &[Point]) -> Vec<Point> {
+    let mut p: Vec<usize> = successors(Some(0), |n| Some(n + 1))
+        .take(points.len())
+        .collect();
+    p.shuffle(&mut rng());
+    p.into_iter().map(|i| points[i]).take(blob_count).collect()
 }
