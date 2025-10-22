@@ -1,5 +1,6 @@
 mod command;
 mod data;
+pub mod dbscan;
 mod death;
 pub mod either;
 mod file;

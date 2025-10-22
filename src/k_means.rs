@@ -9,12 +9,12 @@ use std::{
 
 use crate::vec2::Point;
 
-pub fn k_means(blob_count: usize, points: &Vec<Point>) -> Vec<usize> {
+pub fn k_means(blob_count: usize, points: &[Point]) -> Vec<usize> {
     KMeans::init(blob_count, points).run()
 }
 
 struct KMeans<'a> {
-    points: &'a Vec<Point>,
+    points: &'a [Point],
     colors: Vec<usize>,
     centers: Vec<Point>,
 
@@ -23,7 +23,7 @@ struct KMeans<'a> {
 }
 
 impl<'a> KMeans<'a> {
-    fn init(blob_count: usize, points: &'a Vec<Point>) -> Self {
+    fn init(blob_count: usize, points: &'a [Point]) -> Self {
         let centers = choose(blob_count, points);
         let new_centers = centers.clone();
         let colors = repeat_n(0, points.len()).collect();

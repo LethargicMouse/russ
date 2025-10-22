@@ -39,6 +39,19 @@ impl<T> Vec2<T> {
     pub fn unwrap(self) -> (T, T) {
         (self.x, self.y)
     }
+
+    pub fn nearest(self, inner: &[Vec2<T>]) -> usize
+    where
+        T: Add<Output = T> + Pow<u8, Output = T> + PartialOrd + Sub<Output = T> + Copy,
+    {
+        assert!(!inner.is_empty());
+        inner
+            .iter()
+            .enumerate()
+            .min_by(|(_, p), (_, p2)| self.dist2(**p).partial_cmp(&self.dist2(**p2)).unwrap())
+            .unwrap()
+            .0
+    }
 }
 
 impl<A: Clone, T: DivAssign<A>> DivAssign<A> for Vec2<T> {

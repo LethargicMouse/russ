@@ -8,7 +8,7 @@ use crate::{
 };
 
 pub fn blobs(blob_count: usize, point_count: usize, radius: f32, delta_radius: f32) -> Vec<Point> {
-    let centers: Vec<Point> = repeat_with(|| random_point(radius))
+    let centers: Vec<Point> = repeat_with(|| random_point(radius - delta_radius))
         .take(blob_count)
         .collect();
     repeat_with(|| rng().random_range(0..blob_count))
