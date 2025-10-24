@@ -1,5 +1,5 @@
 use russ::*;
 
 fn main() {
-    dbscan::test();
+    link::compiler::run();
 }

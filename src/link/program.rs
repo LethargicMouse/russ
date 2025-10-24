@@ -7,7 +7,7 @@ pub mod analyse;
 
 pub struct Program<'a> {
     name: &'a str,
-    funs: HashMap<&'a str, Fun<'a>>,
+    pub funs: HashMap<&'a str, Fun<'a>>,
 }
 
 impl<'a> Program<'a> {

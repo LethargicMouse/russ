@@ -7,5 +7,5 @@ mod view;
 
 #[derive(Debug)]
 pub struct Fun<'a> {
-    header: Header<'a>,
+    pub header: Header<'a>,
 }

@@ -2,6 +2,7 @@ use std::fmt::Debug;
 
 use crate::source::view::View;
 
+#[derive(Clone, Copy)]
 pub struct Viewed<'a, T> {
     pub view: View<'a>,
     pub un: T,

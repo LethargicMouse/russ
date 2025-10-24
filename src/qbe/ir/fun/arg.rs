@@ -1,10 +1,10 @@
 use std::fmt::Display;
 
-use crate::qbe::ir::r#type::Abi;
+use crate::qbe::ir::r#type::AbiType;
 
 pub struct Arg {
     name: String,
-    r#type: Abi,
+    r#type: AbiType,
 }
 
 impl Display for Arg {

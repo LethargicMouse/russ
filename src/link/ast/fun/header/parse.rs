@@ -1,5 +1,5 @@
 use crate::{
-    link::ast::fun::header::Header,
+    link::ast::{fun::header::Header, r#type::Type},
     source::parser::{Parser, common::name, fail::PF},
 };
 
@@ -8,5 +8,8 @@ pub fn header<'a>(p: &mut Parser<'a>) -> Result<Header<'a>, PF> {
     let name = p.viewed(name)?;
     p.expect("(")?;
     p.expect(")")?;
-    Ok(Header { name })
+    Ok(Header {
+        name,
+        ret_type: Type::Unit,
+    })
 }

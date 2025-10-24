@@ -1,13 +1,14 @@
 mod empty;
 mod fun;
+pub use fun::Fun;
 pub mod r#type;
 
 use std::{fmt::Display, fs::File, io::Write};
 
-use crate::{death::OrDie, qbe::ir::fun::Fun};
+use crate::death::OrDie;
 
 pub struct IR {
-    funs: Vec<Fun>,
+    pub funs: Vec<Fun>,
 }
 
 impl IR {

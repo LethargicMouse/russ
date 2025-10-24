@@ -18,13 +18,13 @@ impl Display for Type {
     }
 }
 
-pub enum Extra {
+pub enum ExtraType {
     Basic(Type),
     Byte,
     Half,
 }
 
-pub enum Abi {
+pub enum AbiType {
     Basic(Type),
     UnsignedByte,
     UnsignedHalf,
@@ -33,15 +33,19 @@ pub enum Abi {
     Name(String),
 }
 
-impl Display for Abi {
+impl AbiType {
+    pub const WORD: Self = Self::Basic(Type::Word);
+}
+
+impl Display for AbiType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Abi::Basic(t) => write!(f, "{t}"),
-            Abi::UnsignedByte => write!(f, "ub"),
-            Abi::UnsignedHalf => write!(f, "uh"),
-            Abi::SignedByte => write!(f, "sb"),
-            Abi::SignedHalf => write!(f, "sh"),
-            Abi::Name(n) => write!(f, ":{n}"),
+            AbiType::Basic(t) => write!(f, "{t}"),
+            AbiType::UnsignedByte => write!(f, "ub"),
+            AbiType::UnsignedHalf => write!(f, "uh"),
+            AbiType::SignedByte => write!(f, "sb"),
+            AbiType::SignedHalf => write!(f, "sh"),
+            AbiType::Name(n) => write!(f, ":{n}"),
         }
     }
 }
