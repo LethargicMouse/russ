@@ -2,12 +2,13 @@ pub mod arg;
 
 use std::fmt::Display;
 
-use crate::qbe::ir::{fun::arg::Arg, r#type::AbiType};
+use crate::qbe::ir::{Stmt, fun::arg::Arg, r#type::AbiType};
 
 pub struct Fun {
     pub ret_type: AbiType,
     pub name: String,
     pub args: Vec<Arg>,
+    pub stmts: Vec<Stmt>,
 }
 
 impl Display for Fun {
@@ -16,7 +17,7 @@ impl Display for Fun {
         for arg in &self.args {
             write!(f, "{arg}, ")?;
         }
-        write!(f, ")")?;
-        Ok(())
+        write!(f, ") {{\n@start")?;
+        write!(f, "\n}}")
     }
 }

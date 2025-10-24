@@ -1,12 +1,12 @@
 use crate::{
     link::{ast::r#type::Type, compiler::generate::Generate},
-    qbe::ir::r#type::AbiType,
+    qbe::ir,
 };
 
 impl<'a, 'b> Generate<'a, 'b> {
-    pub fn r#type(&self, r#type: Type) -> AbiType {
+    pub fn r#type(&self, r#type: Type) -> ir::AbiType {
         match r#type {
-            Type::Unit => AbiType::WORD,
+            Type::Unit => ir::AbiType::WORD,
         }
     }
 }

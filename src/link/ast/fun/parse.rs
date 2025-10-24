@@ -8,6 +8,6 @@ use crate::{
 
 pub fn fun<'a>(p: &mut Parser<'a>) -> Result<Fun<'a>, PF> {
     let header = header(p)?;
-    let _ = block(p)?;
-    Ok(Fun { header })
+    let body = block(p)?;
+    Ok(Fun { header, body })
 }

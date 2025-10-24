@@ -1,4 +1,4 @@
-use crate::link::ast::fun::header::Header;
+use crate::link::ast::{expr::block::Block, fun::header::Header};
 
 mod header;
 mod name;
@@ -8,4 +8,5 @@ mod view;
 #[derive(Debug)]
 pub struct Fun<'a> {
     pub header: Header<'a>,
+    pub body: Block,
 }

@@ -1,7 +1,10 @@
 mod empty;
 mod fun;
 pub use fun::Fun;
-pub mod r#type;
+mod r#type;
+pub use r#type::AbiType;
+mod stmt;
+pub use stmt::Stmt;
 
 use std::{fmt::Display, fs::File, io::Write};
 
