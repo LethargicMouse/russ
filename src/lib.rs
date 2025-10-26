@@ -1,12 +1,4 @@
-mod command;
-mod data;
-pub mod dbscan;
-mod death;
-pub mod either;
-mod file;
-pub mod k_means;
-pub mod link;
-mod pretty;
-pub mod qbe;
-mod source;
-mod vec2;
+pub mod die;
+pub use die::die;
+mod either;
+pub mod file;
