@@ -1,6 +1,9 @@
-use std::{fs::File, process::Command};
+use std::fs::File;
 
-use russ::{die::either::OrDie, file::create};
+use russ::{
+    die::either::OrDie,
+    file::{create, run},
+};
 
 fn main() {
     // get path
@@ -23,10 +26,6 @@ fn main() {
     File::create(out_path).or_die_with(|e| create::Error(out_path, e));
 
     // run `qbe`
-    let output = Command::new("qbe")
-        .args(["-o", "out.s", "out.qbe"])
-        .output()
-        .or_die_with(|_| todo!());
-    let _ = output;
-    todo!()
+    run("qbe", ["-o", "out.s", "out.qbe"]);
+    run("cc", ["-o", "out", "out.s"])
 }
