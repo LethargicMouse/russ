@@ -20,7 +20,7 @@ impl<A> Either for Option<A> {
         right: impl FnOnce(Self::Right) -> T,
     ) -> T {
         match self {
-            Some(t) => right(t),
+            Some(a) => right(a),
             None => left(()),
         }
     }

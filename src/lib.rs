@@ -1,5 +1,7 @@
+pub mod code;
 pub mod die;
-pub use die::die;
-mod display;
-mod either;
+pub mod display;
+pub mod either;
 pub mod file;
+pub mod process;
+pub mod qbe;
