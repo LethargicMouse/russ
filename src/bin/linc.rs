@@ -1,6 +1,7 @@
 use russ::{
     code::Code,
     file::{self},
+    link::{analyse, lex, parse},
     process::{call, run},
     qbe::ir::IR,
 };
@@ -26,8 +27,10 @@ fn read_code() -> Code {
     Code {}
 }
 
-fn process(_code: Code) -> IR {
-    IR {}
+fn process(code: Code) -> IR {
+    let tokens = lex(&code);
+    let ast = parse(tokens);
+    analyse(ast)
 }
 
 fn dump(ir: IR) {
