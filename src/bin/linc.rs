@@ -16,7 +16,12 @@ fn main() {
     let args = get_args();
     match args.command {
         Command::Run(path) => run(path),
+        Command::Clean => clean(),
     }
+}
+
+fn clean() {
+    call("rm", &[OUT, OUT_ASM, OUT_IR]).unwrap_or(());
 }
 
 fn run(path: String) {
@@ -43,8 +48,11 @@ fn get_args() -> Args {
 
 fn get_command(args: &mut env::Args) -> Command {
     match args.next() {
-        Some(s) if &s == "run" => Command::Run(get_path(args)),
-        Some(command) => die(Unexpected("command", command)),
+        Some(command) => match command.as_str() {
+            "run" => Command::Run(get_path(args)),
+            "clean" => Command::Clean,
+            _ => die(Unexpected("command", command)),
+        },
         None => die(Expected("command")),
     }
 }
@@ -77,15 +85,16 @@ struct Args {
 
 enum Command {
     Run(String),
+    Clean,
 }
 
 fn postcompile() {
-    call("qbe", &["-o", "out.s", OUT_PATH]);
-    call("cc", &["-o", "out", "out.s"]);
+    call("qbe", &["-o", OUT_ASM, OUT_IR]).or_die();
+    call("cc", &["-o", OUT, OUT_ASM]).or_die();
 }
 
 fn run_out() {
-    process::run("./out", &[]);
+    process::run(OUT, &[]);
 }
 
 fn process(code: Code) -> IR {
@@ -95,7 +104,9 @@ fn process(code: Code) -> IR {
 }
 
 fn dump(ir: IR) {
-    file::dump(ir, OUT_PATH);
+    file::dump(ir, OUT_IR);
 }
 
-const OUT_PATH: &str = "out.qbe";
+const OUT_IR: &str = "out.qbe";
+const OUT: &str = "./out";
+const OUT_ASM: &str = "out.s";

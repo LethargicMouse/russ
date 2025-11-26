@@ -16,7 +16,7 @@ impl Display for Block<'_> {
         };
         write!(
             f,
-            "{} {} {}\n{}{}{}",
+            "\n{} {} {}\n{}{}{}",
             Repeat('-', padding),
             self.0,
             Repeat('-', rest),
