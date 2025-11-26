@@ -1,5 +1,6 @@
 pub mod code;
 pub mod die;
+pub use die::die;
 pub mod display;
 pub mod either;
 pub mod file;
