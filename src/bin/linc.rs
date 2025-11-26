@@ -4,12 +4,12 @@ use std::{
 };
 
 use russ::{
-    code::{Code, read_code},
     die::{Mortal, die},
     file::{self},
     link::{analyse, lex, parse},
     process::{self, call},
     qbe::ir::IR,
+    source::{Source, read_source},
 };
 
 fn main() {
@@ -30,8 +30,8 @@ fn run(path: String) {
 }
 
 fn compile(path: String) {
-    let code = read_code(path);
-    let ir = process(code);
+    let source = read_source(path);
+    let ir = process(source);
     dump(ir);
     postcompile();
 }
@@ -97,8 +97,8 @@ fn run_out() {
     process::run(OUT, &[]);
 }
 
-fn process(code: Code) -> IR {
-    let tokens = lex(&code);
+fn process(source: Source) -> IR {
+    let tokens = lex(&source);
     let ast = parse(tokens);
     analyse(ast)
 }

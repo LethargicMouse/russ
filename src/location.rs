@@ -1,0 +1,56 @@
+mod display;
+
+use std::fmt::Display;
+
+use crate::{
+    location::display::{Line, Underline},
+    source::Source,
+};
+
+pub struct Location<'a> {
+    pub source: &'a Source,
+    pub start: Pos,
+    pub end: Pos,
+}
+
+impl Display for Location<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{} at {}:\n     |{}",
+            self.source.name,
+            self.start,
+            Line(self.start.line, self.source)
+        )?;
+        if self.start.line == self.end.line {
+            write!(f, "{}", Underline(self.start.symbol, self.end.symbol))?;
+            return Ok(());
+        }
+        write!(
+            f,
+            "{}",
+            Underline(
+                self.start.symbol,
+                self.source.get_line(self.start.line as usize - 1).len() as u32
+            )
+        )?;
+        for line in self.start.line + 1..=self.end.line {
+            write!(f, "{}", Line(line, self.source))?;
+        }
+        write!(f, "{}", Underline(1, self.end.symbol))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct Pos {
+    pub line: u32,
+    pub symbol: u32,
+}
+
+impl Display for Pos {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}:{}", self.line, self.symbol)
+    }
+}
+
+pub const BEGIN: Pos = Pos { line: 1, symbol: 1 };
