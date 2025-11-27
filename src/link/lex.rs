@@ -46,7 +46,8 @@ impl<'a> Lex<'a> {
         None
     }
 
-    fn token(&self, _lexeme: Lexeme, _len: usize) -> Token {
+    fn token(&mut self, _lexeme: Lexeme, len: usize) -> Token {
+        self.cursor += len;
         Token {}
     }
 }
@@ -59,13 +60,14 @@ impl Display for Error<'_> {
     }
 }
 
-const LIST: LexList = &[];
+const LIST: LexList = &[("fn", Fun)];
 
 type LexList<'a> = &'a [(&'a str, Lexeme)];
 
 #[derive(Clone, Copy)]
 enum Lexeme {
     Eof,
+    Fun,
 }
 
 use Lexeme::*;

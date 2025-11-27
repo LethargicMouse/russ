@@ -14,14 +14,11 @@ pub struct Source {
 
 pub fn read_source(path: String) -> Source {
     let code = read(&path);
-    let name = path;
-    let lines = get_lines(&code);
-    let poses = get_poses(&code);
     Source {
-        name,
-        code,
-        lines,
-        poses,
+        code: read(&path),
+        lines: get_lines(&code),
+        poses: get_poses(&code),
+        name: path,
     }
 }
 
