@@ -39,11 +39,19 @@ impl<'a> Lex<'a> {
 
     fn list(&mut self, list: LexList) -> Option<Token> {
         for (s, lexeme) in list {
+            self.skip();
             if self.source.code[self.cursor..].starts_with(s) {
                 return Some(self.token(*lexeme, s.len()));
             }
         }
         None
+    }
+
+    fn skip(&mut self) {
+        self.cursor += self.source.code[self.cursor..]
+            .chars()
+            .take_while(|c| c.is_whitespace())
+            .count();
     }
 
     fn token(&mut self, _lexeme: Lexeme, len: usize) -> Token {
