@@ -5,8 +5,8 @@ use crate::{
     link::{
         ast::Ast,
         lex::{
-            Lexeme::{self, *},
             Token,
+            lexeme::Lexeme::{self, *},
         },
     },
     location::Location,
