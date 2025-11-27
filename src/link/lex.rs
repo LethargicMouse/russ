@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use crate::{die::Mortal, location::Location, source::Source};
 
-pub fn lex(code: &Source) -> Vec<Token> {
+pub fn lex(code: &'_ Source) -> Vec<Token<'_>> {
     Lex::new(code).run(LIST)
 }
 
@@ -16,7 +16,7 @@ impl<'a> Lex<'a> {
         Self { source, cursor: 0 }
     }
 
-    fn run(mut self, list: LexList) -> Vec<Token> {
+    fn run(mut self, list: LexList<'a>) -> Vec<Token<'a>> {
         let mut res = Vec::new();
         self.skip();
         while self.cursor < self.source.code.len() {
@@ -27,11 +27,12 @@ impl<'a> Lex<'a> {
             res.push(tok);
             self.skip();
         }
+        self.cursor -= 1;
         res.push(self.token(Eof, 1));
         res
     }
 
-    fn name(&mut self) -> Option<Token> {
+    fn name(&mut self) -> Option<Token<'a>> {
         if self.cursor == self.source.code.len()
             || !is_name_first_char(self.source.code[self.cursor])
         {
@@ -41,7 +42,7 @@ impl<'a> Lex<'a> {
             .iter()
             .take_while(|c| is_name_char(**c))
             .count();
-        let res = &self.source.code[self.cursor..res_len];
+        let res = &self.source.code[self.cursor..self.cursor + res_len];
         let lexeme = Name(str::from_utf8(res).unwrap());
         Some(self.token(lexeme, res_len))
     }
@@ -50,14 +51,14 @@ impl<'a> Lex<'a> {
         Error(self.location(1))
     }
 
-    fn location(&'_ self, len: usize) -> Location<'_> {
+    fn location(&self, len: usize) -> Location<'a> {
         let source = self.source;
         let start = self.source.poses[self.cursor];
         let end = self.source.poses[self.cursor + len];
         Location { source, start, end }
     }
 
-    fn list(&mut self, list: LexList) -> Option<Token> {
+    fn list(&mut self, list: LexList<'a>) -> Option<Token<'a>> {
         for (s, lexeme) in list {
             if self.source.code[self.cursor..].starts_with(s) {
                 return Some(self.token(*lexeme, s.len()));
@@ -73,9 +74,10 @@ impl<'a> Lex<'a> {
             .count();
     }
 
-    fn token(&mut self, _lexeme: Lexeme, len: usize) -> Token {
+    fn token(&mut self, lexeme: Lexeme<'a>, len: usize) -> Token<'a> {
+        let location = self.location(len);
         self.cursor += len;
-        Token {}
+        Token { lexeme, location }
     }
 }
 
@@ -95,20 +97,44 @@ impl Display for Error<'_> {
     }
 }
 
-const LIST: LexList = &[(b"fn", Fun), (b"(", ParL), (b")", ParR), (b"{", CurL)];
+const LIST: LexList = &[
+    (b"fn", Fun),
+    (b"(", ParL),
+    (b")", ParR),
+    (b"{", CurL),
+    (b"}", CurR),
+];
 
 type LexList<'a> = &'a [(&'a [u8], Lexeme<'a>)];
 
-#[derive(Clone, Copy)]
-enum Lexeme<'a> {
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum Lexeme<'a> {
     Eof,
     Fun,
     Name(&'a str),
     ParL,
     ParR,
     CurL,
+    CurR,
+}
+
+impl Lexeme<'_> {
+    pub fn show(self) -> &'static str {
+        match self {
+            Eof => "<eof>",
+            Fun => "`fn`",
+            Name(_) => "<name>",
+            ParL => "`(`",
+            ParR => "`)`",
+            CurL => "`{`",
+            CurR => "`}`",
+        }
+    }
 }
 
 use Lexeme::*;
 
-pub struct Token {}
+pub struct Token<'a> {
+    pub lexeme: Lexeme<'a>,
+    pub location: Location<'a>,
+}

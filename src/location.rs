@@ -7,6 +7,7 @@ use crate::{
     source::Source,
 };
 
+#[derive(Clone, Copy)]
 pub struct Location<'a> {
     pub source: &'a Source,
     pub start: Pos,
@@ -31,7 +32,7 @@ impl Display for Location<'_> {
             "{}",
             Underline(
                 self.start.symbol,
-                self.source.get_line(self.start.line as usize - 1).len() as u32
+                self.source.get_line(self.start.line as usize - 1).len() as u32 + 1
             )
         )?;
         for line in self.start.line + 1..=self.end.line {
@@ -41,10 +42,22 @@ impl Display for Location<'_> {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Pos {
     pub line: u32,
     pub symbol: u32,
+}
+
+impl Pos {
+    pub fn after(mut self, c: u8) -> Self {
+        if c == b'\n' {
+            self.line += 1;
+            self.symbol = 1;
+        } else {
+            self.symbol += 1;
+        }
+        self
+    }
 }
 
 impl Display for Pos {

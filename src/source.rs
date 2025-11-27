@@ -1,4 +1,4 @@
-use std::iter::once;
+use std::mem::replace;
 
 use crate::{
     file::read,
@@ -23,19 +23,12 @@ pub fn read_source(path: String) -> Source {
 }
 
 fn get_poses(code: &[u8]) -> Vec<Pos> {
-    code.iter()
-        .chain(once(&b' '))
-        .scan(BEGIN, |p, c| {
-            let res = Some(*p);
-            if *c == b'\n' {
-                p.line += 1;
-                p.symbol = 1;
-            } else {
-                p.symbol += 1;
-            }
-            res
-        })
-        .collect()
+    let mut res: Vec<Pos> = code
+        .iter()
+        .scan(BEGIN, |p, c| Some(replace(p, p.after(*c))))
+        .collect();
+    res.push(res.last().unwrap().after(b' '));
+    res
 }
 
 impl Source {
