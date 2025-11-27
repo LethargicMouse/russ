@@ -5,10 +5,10 @@ use std::{
 
 use crate::{die::Mortal, file::open};
 
-pub fn read(path: &str) -> String {
-    let mut buf = String::new();
+pub fn read(path: &str) -> Vec<u8> {
+    let mut buf = Vec::new();
     open(path)
-        .read_to_string(&mut buf)
+        .read_to_end(&mut buf)
         .or_die_with(|e| Error(path, e));
     buf
 }
