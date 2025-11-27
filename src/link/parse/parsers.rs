@@ -1,5 +1,5 @@
 use crate::link::{
-    ast::{Ast, Expr},
+    ast::{Ast, Call, Expr},
     lex::lexeme::Lexeme::{self, *},
     parse::{Fail, Parse},
 };
@@ -19,7 +19,19 @@ impl<'a> Parse<'a> {
     }
 
     fn expr(&mut self) -> Result<Expr, Fail> {
-        self.either(&[Self::unit, |_| Ok(Expr::Unit)])
+        self.either(&[
+            Self::unit,
+            |p| Ok(Expr::Call(p.call()?)),
+            |_| Ok(Expr::Unit),
+        ])
+    }
+
+    fn call(&mut self) -> Result<Call, Fail> {
+        self.name()?;
+        self.expect(ParL)?;
+        self.expr()?;
+        self.expect(ParR)?;
+        Ok(Call {})
     }
 
     fn unit(&mut self) -> Result<Expr, Fail> {
@@ -34,6 +46,15 @@ impl<'a> Parse<'a> {
             Ok(())
         } else {
             self.fail(lexeme.show())
+        }
+    }
+
+    fn name(&mut self) -> Result<&'a str, Fail> {
+        if let Name(n) = self.tokens[self.cursor].lexeme {
+            self.cursor += 1;
+            Ok(n)
+        } else {
+            self.fail("name")
         }
     }
 }
