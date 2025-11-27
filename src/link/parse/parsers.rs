@@ -17,7 +17,7 @@ impl<'a> Parse<'a> {
     }
 
     fn expr(&mut self) -> Result<Expr, Fail> {
-        todo!()
+        Ok(Expr::Unit)
     }
 
     fn expect(&mut self, lexeme: Lexeme) -> Result<(), Fail> {

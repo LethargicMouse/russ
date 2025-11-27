@@ -1,3 +1,5 @@
 pub struct Ast {}
 
-pub enum Expr {}
+pub enum Expr {
+    Unit,
+}
