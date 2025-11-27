@@ -18,12 +18,14 @@ impl<'a> Lex<'a> {
 
     fn run(mut self, list: LexList) -> Vec<Token> {
         let mut res = Vec::new();
+        self.skip();
         while self.cursor < self.source.code.len() {
             let tok = self
                 .list(list)
                 .or_else(|| self.name())
                 .or_die_with(|_| self.error());
             res.push(tok);
+            self.skip();
         }
         res.push(self.token(Eof, 1));
         res
@@ -57,7 +59,6 @@ impl<'a> Lex<'a> {
 
     fn list(&mut self, list: LexList) -> Option<Token> {
         for (s, lexeme) in list {
-            self.skip();
             if self.source.code[self.cursor..].starts_with(s) {
                 return Some(self.token(*lexeme, s.len()));
             }
@@ -94,7 +95,7 @@ impl Display for Error<'_> {
     }
 }
 
-const LIST: LexList = &[(b"fn", Fun)];
+const LIST: LexList = &[(b"fn", Fun), (b"(", ParL), (b")", ParR), (b"{", CurL)];
 
 type LexList<'a> = &'a [(&'a [u8], Lexeme<'a>)];
 
@@ -103,6 +104,9 @@ enum Lexeme<'a> {
     Eof,
     Fun,
     Name(&'a str),
+    ParL,
+    ParR,
+    CurL,
 }
 
 use Lexeme::*;
