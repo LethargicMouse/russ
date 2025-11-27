@@ -30,7 +30,18 @@ impl<'a> Lex<'a> {
     }
 
     fn name(&mut self) -> Option<Token> {
-        todo!()
+        if self.cursor == self.source.code.len()
+            || !is_name_first_char(self.source.code[self.cursor])
+        {
+            return None;
+        }
+        let res_len = self.source.code[self.cursor..]
+            .iter()
+            .take_while(|c| is_name_char(**c))
+            .count();
+        let res = &self.source.code[self.cursor..res_len];
+        let lexeme = Name(str::from_utf8(res).unwrap());
+        Some(self.token(lexeme, res_len))
     }
 
     fn error(&'_ self) -> Error<'_> {
@@ -67,6 +78,14 @@ impl<'a> Lex<'a> {
     }
 }
 
+fn is_name_first_char(c: u8) -> bool {
+    c.is_ascii_alphabetic() || c == b'_'
+}
+
+fn is_name_char(c: u8) -> bool {
+    is_name_first_char(c) || c.is_ascii_digit()
+}
+
 struct Error<'a>(Location<'a>);
 
 impl Display for Error<'_> {
@@ -77,12 +96,13 @@ impl Display for Error<'_> {
 
 const LIST: LexList = &[(b"fn", Fun)];
 
-type LexList<'a> = &'a [(&'a [u8], Lexeme)];
+type LexList<'a> = &'a [(&'a [u8], Lexeme<'a>)];
 
 #[derive(Clone, Copy)]
-enum Lexeme {
+enum Lexeme<'a> {
     Eof,
     Fun,
+    Name(&'a str),
 }
 
 use Lexeme::*;
