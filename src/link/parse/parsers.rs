@@ -4,6 +4,8 @@ use crate::link::{
     parse::{Fail, Parse},
 };
 
+pub type Parser<'a, T> = fn(&mut Parse<'a>) -> Result<T, Fail>;
+
 impl<'a> Parse<'a> {
     pub fn ast(&mut self) -> Result<Ast, Fail> {
         self.expect(Fun)?;
@@ -17,6 +19,12 @@ impl<'a> Parse<'a> {
     }
 
     fn expr(&mut self) -> Result<Expr, Fail> {
+        self.either(&[Self::unit, |_| Ok(Expr::Unit)])
+    }
+
+    fn unit(&mut self) -> Result<Expr, Fail> {
+        self.expect(ParL)?;
+        self.expect(ParR)?;
         Ok(Expr::Unit)
     }
 

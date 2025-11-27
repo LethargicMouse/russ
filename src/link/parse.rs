@@ -1,9 +1,14 @@
+mod combinators;
 mod error;
 mod parsers;
 
 use crate::{
     die::Mortal,
-    link::{ast::Ast, lex::Token, parse::error::Fail},
+    link::{
+        ast::Ast,
+        lex::Token,
+        parse::{error::Fail, parsers::Parser},
+    },
 };
 
 pub fn parse(tokens: Vec<Token>) -> Ast {
@@ -27,7 +32,7 @@ impl<'a> Parse<'a> {
         }
     }
 
-    fn run<T>(mut self, f: impl FnOnce(&mut Self) -> Result<T, Fail>) -> T {
+    fn run<T>(mut self, f: Parser<'a, T>) -> T {
         f(&mut self).or_die_with(|_| self.error())
     }
 }
