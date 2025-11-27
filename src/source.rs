@@ -43,7 +43,7 @@ fn get_lines(code: &[u8]) -> Vec<(usize, usize)> {
         .map(|l| l.len())
         .scan(0, |s, l| {
             let res = Some((*s, l));
-            *s += l;
+            *s += l + 1;
             res
         })
         .collect()
