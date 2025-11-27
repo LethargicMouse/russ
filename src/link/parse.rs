@@ -1,14 +1,10 @@
+mod parsers;
+
 use std::{cmp::Ordering, fmt::Display};
 
 use crate::{
     die::Mortal,
-    link::{
-        ast::Ast,
-        lex::{
-            Token,
-            lexeme::Lexeme::{self, *},
-        },
-    },
+    link::{ast::Ast, lex::Token},
     location::Location,
 };
 
@@ -43,25 +39,6 @@ impl<'a> Parse<'a> {
         msgs.sort();
         msgs.dedup();
         Error { location, msgs }
-    }
-
-    fn ast(&mut self) -> Result<Ast, Fail> {
-        self.expect(Fun)?;
-        self.expect(Name("main"))?;
-        self.expect(ParL)?;
-        self.expect(ParR)?;
-        self.expect(CurL)?;
-        self.expect(CurR)?;
-        Ok(Ast {})
-    }
-
-    fn expect(&mut self, lexeme: Lexeme) -> Result<(), Fail> {
-        if self.tokens[self.cursor].lexeme == lexeme {
-            self.cursor += 1;
-            Ok(())
-        } else {
-            self.fail(lexeme.show())
-        }
     }
 
     fn fail<T>(&mut self, s: &'static str) -> Result<T, Fail> {
