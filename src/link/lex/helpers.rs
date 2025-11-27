@@ -27,4 +27,12 @@ impl<'a> Lex<'a> {
         self.cursor += len;
         Token { lexeme, location }
     }
+
+    pub fn take_while(&mut self, f: impl Fn(u8) -> bool) -> &'a [u8] {
+        let len = self.source.code[self.cursor..]
+            .iter()
+            .take_while(|c| f(**c))
+            .count();
+        &self.source.code[self.cursor..self.cursor + len]
+    }
 }

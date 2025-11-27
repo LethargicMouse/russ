@@ -5,35 +5,28 @@ use crate::link::lex::{
 
 impl<'a> Lex<'a> {
     pub fn int(&mut self) -> Option<Token<'a>> {
-        let res_len = self.source.code[self.cursor..]
-            .iter()
-            .take_while(|c| c.is_ascii_digit())
-            .count();
-        if res_len == 0 {
+        let res = self.take_while(|c| c.is_ascii_digit());
+        if res.is_empty() {
             None
         } else {
-            let res = str::from_utf8(&self.source.code[self.cursor..self.cursor + res_len])
-                .unwrap()
-                .parse()
-                .unwrap();
-            let lexeme = Int(res);
-            Some(self.token(lexeme, res_len))
+            let int = str::from_utf8(res).unwrap().parse().unwrap();
+            let lexeme = Int(int);
+            Some(self.token(lexeme, res.len()))
         }
     }
 
     pub fn name(&mut self) -> Option<Token<'a>> {
-        if self.cursor == self.source.code.len()
-            || !is_name_first_char(self.source.code[self.cursor])
+        if self
+            .source
+            .code
+            .get(self.cursor)
+            .is_none_or(|c| !is_name_first_char(*c))
         {
             return None;
         }
-        let res_len = self.source.code[self.cursor..]
-            .iter()
-            .take_while(|c| is_name_char(**c))
-            .count();
-        let res = &self.source.code[self.cursor..self.cursor + res_len];
+        let res = self.take_while(is_name_char);
         let lexeme = Name(str::from_utf8(res).unwrap());
-        Some(self.token(lexeme, res_len))
+        Some(self.token(lexeme, res.len()))
     }
 
     pub fn list(&mut self, list: LexList<'a>) -> Option<Token<'a>> {
