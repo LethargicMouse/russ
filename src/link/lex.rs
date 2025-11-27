@@ -23,6 +23,7 @@ impl<'a> Lex<'a> {
             let tok = self
                 .list(list)
                 .or_else(|| self.name())
+                .or_else(|| self.int())
                 .or_die_with(|_| self.error());
             res.push(tok);
             self.skip();
@@ -30,6 +31,23 @@ impl<'a> Lex<'a> {
         self.cursor -= 1;
         res.push(self.token(Eof, 1));
         res
+    }
+
+    fn int(&mut self) -> Option<Token<'a>> {
+        let res_len = self.source.code[self.cursor..]
+            .iter()
+            .take_while(|c| c.is_ascii_digit())
+            .count();
+        if res_len == 0 {
+            None
+        } else {
+            let res = str::from_utf8(&self.source.code[self.cursor..self.cursor + res_len])
+                .unwrap()
+                .parse()
+                .unwrap();
+            let lexeme = Int(res);
+            Some(self.token(lexeme, res_len))
+        }
     }
 
     fn name(&mut self) -> Option<Token<'a>> {
@@ -116,6 +134,7 @@ pub enum Lexeme<'a> {
     ParR,
     CurL,
     CurR,
+    Int(i64),
 }
 
 impl Lexeme<'_> {
@@ -128,6 +147,7 @@ impl Lexeme<'_> {
             ParR => "`)`",
             CurL => "`{`",
             CurR => "`}`",
+            Int(_) => "<int>",
         }
     }
 }
