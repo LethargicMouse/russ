@@ -5,7 +5,8 @@ use crate::{
 
 pub fn gen_stmts(expr: Expr) -> Vec<Stmt> {
     let mut gen_stmts = GenStmts::new();
-    gen_stmts.expr(expr);
+    let tmp = gen_stmts.expr(expr);
+    gen_stmts.result.push(Stmt::Ret(tmp));
     gen_stmts.result
 }
 
@@ -31,7 +32,10 @@ impl GenStmts {
     }
 
     fn call(&mut self, call: Call) -> Tmp {
-        todo!()
+        let arg = self.expr(*call.arg);
+        let tmp = self.next_tmp();
+        self.result.push(Stmt::Call(tmp, call.name.into(), arg));
+        tmp
     }
 
     fn unit(&mut self) -> Tmp {

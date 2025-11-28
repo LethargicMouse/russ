@@ -7,7 +7,7 @@ use crate::link::{
 pub type Parser<'a, T> = fn(&mut Parse<'a>) -> Result<T, Fail>;
 
 impl<'a> Parse<'a> {
-    pub fn ast(&mut self) -> Result<Ast, Fail> {
+    pub fn ast(&mut self) -> Result<Ast<'a>, Fail> {
         self.expect(Fun)?;
         self.expect(Name("main"))?;
         self.expect(ParL)?;
@@ -18,7 +18,7 @@ impl<'a> Parse<'a> {
         Ok(Ast { expr })
     }
 
-    fn expr(&mut self) -> Result<Expr, Fail> {
+    fn expr(&mut self) -> Result<Expr<'a>, Fail> {
         self.either(&[
             Self::unit,
             |p| Ok(Expr::Int(p.int()?)),
@@ -27,15 +27,15 @@ impl<'a> Parse<'a> {
         ])
     }
 
-    fn call(&mut self) -> Result<Call, Fail> {
-        self.name()?;
+    fn call(&mut self) -> Result<Call<'a>, Fail> {
+        let name = self.name()?;
         self.expect(ParL)?;
-        self.expr()?;
+        let arg = Box::new(self.expr()?);
         self.expect(ParR)?;
-        Ok(Call {})
+        Ok(Call { name, arg })
     }
 
-    fn unit(&mut self) -> Result<Expr, Fail> {
+    fn unit(&mut self) -> Result<Expr<'a>, Fail> {
         self.expect(ParL)?;
         self.expect(ParR)?;
         Ok(Expr::Unit)
