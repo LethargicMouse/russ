@@ -21,6 +21,7 @@ impl<'a> Parse<'a> {
     fn expr(&mut self) -> Result<Expr, Fail> {
         self.either(&[
             Self::unit,
+            |p| Ok(Expr::Int(p.int()?)),
             |p| Ok(Expr::Call(p.call()?)),
             |_| Ok(Expr::Unit),
         ])
@@ -55,6 +56,15 @@ impl<'a> Parse<'a> {
             Ok(n)
         } else {
             self.fail("name")
+        }
+    }
+
+    fn int(&mut self) -> Result<i64, Fail> {
+        if let Int(n) = self.tokens[self.cursor].lexeme {
+            self.cursor += 1;
+            Ok(n)
+        } else {
+            self.fail("int")
         }
     }
 }
