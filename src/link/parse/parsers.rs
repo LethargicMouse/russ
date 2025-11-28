@@ -13,9 +13,9 @@ impl<'a> Parse<'a> {
         self.expect(ParL)?;
         self.expect(ParR)?;
         self.expect(CurL)?;
-        self.expr()?;
+        let expr = self.expr()?;
         self.expect(CurR)?;
-        Ok(Ast {})
+        Ok(Ast { expr })
     }
 
     fn expr(&mut self) -> Result<Expr, Fail> {
@@ -59,7 +59,7 @@ impl<'a> Parse<'a> {
         }
     }
 
-    fn int(&mut self) -> Result<i64, Fail> {
+    fn int(&mut self) -> Result<i32, Fail> {
         if let Int(n) = self.tokens[self.cursor].lexeme {
             self.cursor += 1;
             Ok(n)

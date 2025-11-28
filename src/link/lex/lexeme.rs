@@ -17,7 +17,7 @@ pub enum Lexeme<'a> {
     ParR,
     CurL,
     CurR,
-    Int(i64),
+    Int(i32),
 }
 
 impl Lexeme<'_> {

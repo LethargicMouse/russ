@@ -1,9 +1,11 @@
-pub struct Ast {}
+pub struct Ast {
+    pub expr: Expr,
+}
 
 pub enum Expr {
     Unit,
     Call(Call),
-    Int(i64),
+    Int(i32),
 }
 
 pub struct Call {}
